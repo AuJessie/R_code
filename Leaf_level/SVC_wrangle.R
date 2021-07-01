@@ -10,10 +10,11 @@ library(stringr)
 #1. Create a new folder for your project. e.g. Jessie_Field_Strawberry. If you are taking measurements across multiple time points, you may want subfolders per measurement day. E.g. Jessie_Field_Strawberry -> 20210514. This will be the general "FolderPath" that R will use for reading in your data. 
 # use for extracting/exporting the data. 
 #2. Within the "FolderPath" folder:
-#a) Save the meta data file as a .csv file with the file name layout. "date"_DataEntry.csv. E.g. 20210514_DataEntry.csv.
+#a) Save the meta data file as a .csv file with the file name layout. "date"_DataEntry.csv. E.g. 20210514_DataEntry.csv. A meta data file contains information about your samples e.g. Time/Day, treatment, genotype, etc
 #b) Create a subfolder "SVC" and place all scans from the SVC in is
 #c) Create a subfolder "R_output". This is will be the working directory and to where all data will be exported. 
 #Please edit the following "FolderPath", "date" and "descripCol" so to match your project/computer.  
+#### If you prefer to manually add your files paths and avoid the suggested folder set up, skip to "Import meta data" and "Import SVC data" sections. Here you can manually change the file paths to read in your data.  
 
 FolderPath <- "/Users/jessie/Dropbox/2020/Strawberries/FieldExp/2021_05_14/"
 date = "20210514"
@@ -84,7 +85,7 @@ mergeMetaSpectra <- left_join(metaLong, data.frame(spectralData), by = c("SVCpre
 
 #Summarise spectral data using dplyr. Currently there are three leaves scanned per plant(provided the plant was big enough). 
 metaSpectraLong <- mergeMetaSpectra %>%
-  group_by(Pathogen, Entry, Actual_Plot, SVCprefix, wavelength) %>% #define the groups. We want to to average each wavelength, per plant
+  group_by(Pathogen, Entry, Actual_Plot, SVCprefix, wavelength) %>% #define the groups. We want to to average each wavelength, per plant. The group_by works on columns so think about how your project needs to "group" your data when summarising it.  
   summarise(rfl_mean  = mean(reflectance, na.rm = TRUE), #get mean
             rfl_sd = sd(reflectance, na.rm = TRUE) #get standard deviation
             )
